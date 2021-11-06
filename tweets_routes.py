@@ -1,13 +1,27 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+#Python
+from datetime import datetime
+from uuid import UUID
+from typing import Optional
+from users_routes import User
 
+#FastAPI
+from fastapi import APIRouter
+
+#Pydantic
+from pydantic import BaseModel, Field
+
+#Router
 tweets_router = APIRouter(prefix="/tweets", tags=["Tweets"])
 
+#Model
 class Tweet(BaseModel):
-    id: int
-    text: str
-    user_id: int
+    tweet_id: UUID = Field(...)
+    content: str = Field(..., max_length=140)
+    created_at: datetime = Field(default=datetime.now())
+    updated_at: Optional[datetime] = Field(default=datetime.now())
+    by: User = Field(...)
 
+#Routes
 @tweets_router.get("/post")
 async def post():
     return {"message": "Post"}
