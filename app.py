@@ -1,16 +1,13 @@
-'''
-Tweets
-/ -> Show all tweets
-/post -> Create a new tweet
-/tweets/<tweet_id> -> Show a specific tweet
-/tweets/<tweet_id>/delete -> Delete a specific tweet
-/tweets/<tweet_id>/update -> Update a specific tweet
+from fastapi import FastAPI
 
-Users
-/signup -> Create a new user
-/login -> Log in an existing user
-/users -> Show all users
-/users/<user_id> -> Show a specific user
-/users/<user_id>/delete -> Delete a specific user
-/users/<user_id>/update -> Update a specific user
-'''
+from tweets_routes import tweets_router
+from users_routes import users_router
+
+app = FastAPI()
+
+app.include_router(tweets_router)
+app.include_router(users_router)
+
+@app.get("/", tags=["Home"])
+def home():
+    return {"message": "Hello World"}
