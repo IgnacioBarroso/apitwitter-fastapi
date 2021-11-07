@@ -1,15 +1,15 @@
 #Python
 import json
-from datetime import datetime
+from datetime import datetime, date
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 from users_routes import User
 
 #FastAPI
 from fastapi import APIRouter, status, Body
 
 #Pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 
 #Router
 tweets_router = APIRouter(prefix="/tweets", tags=["Tweets"])
@@ -17,14 +17,14 @@ tweets_router = APIRouter(prefix="/tweets", tags=["Tweets"])
 #Model
 class Tweet(BaseModel):
     tweet_id: UUID = Field(...)
-    content: str = Field(..., max_length=140)
+    content: str = Field(...,min_length=1, max_length=140)
     created_at: datetime = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
     by: User = Field(...)
 
 #Routes
 @tweets_router.post("/post", response_model=Tweet, status_code=status.HTTP_201_CREATED, summary="Post a tweet")
-async def post(tweet: Tweet = Body(...)):
+async def post_a_tweet(tweet: Tweet = Body(...)):
     with open("tweets.json", "r+", encoding="utf-8") as f:
         results = json.loads(f.read())
         tweet_dict = tweet.dict()
@@ -38,6 +38,12 @@ async def post(tweet: Tweet = Body(...)):
         f.seek(0)
         f.write(json.dumps(results, indent=4))
         return tweet
+
+@tweets_router.get("/",response_model=List[Tweet],status_code=status.HTTP_200_OK, summary="Show all tweets")
+async def get_all_tweets():
+    with open("tweets.json", "r", encoding="utf-8") as f:
+        results = json.loads(f.read())
+        return results
 
 @tweets_router.get("/{tweet_id}", response_model=Tweet, status_code=status.HTTP_200_OK, summary="Get a tweet")
 async def tweets(tweet_id: int):

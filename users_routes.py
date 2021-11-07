@@ -1,7 +1,7 @@
 #Python
 import json
 from uuid import UUID
-from datetime import date
+from datetime import date, datetime
 from typing import Optional, List
 
 #FastAPI
@@ -48,7 +48,7 @@ async def login():
 
 #User routes
 @users_router.get("/", response_model=List[User], status_code=status.HTTP_200_OK, summary="Get all users")
-async def get_users():
+async def get_all_users():
     with open("users.json", "r", encoding="utf-8") as f:
         result = json.loads(f.read()) 
         return result
