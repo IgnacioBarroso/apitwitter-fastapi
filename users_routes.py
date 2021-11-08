@@ -46,6 +46,7 @@ async def login():
 async def get_all_users():
     users = db.users.find()
     users = [str(i) for i in users]
+    #enrealidad los valores deben ser string para que no sean objetos, no las keys
     return users
     
 @users_router.get("/{user_id}", response_model=User, status_code=status.HTTP_200_OK, summary="Get a user")
