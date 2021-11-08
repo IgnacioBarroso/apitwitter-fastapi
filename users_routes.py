@@ -6,7 +6,6 @@ from typing import Optional, List
 
 #FastAPI
 from fastapi import APIRouter, Body, status
-from fastapi.param_functions import Form
 
 #Pydantic
 from pydantic import BaseModel, EmailStr, Field
@@ -27,34 +26,28 @@ class UserLogin(UserBase):
 class User(UserBase):
     first_name: str = Field(..., min_length=1, max_length=50)
     last_name: str = Field(..., min_length=1, max_length=50)
-    birth_date: Optional[date] = Field(default=None)
+    birth_date: Optional[str] = Field(default=None)
 
 class UserRegister(User):
     password: str = Field(..., min_length=8, max_length=60)
 
 #Auth routes
-@users_router.post("/signup", response_model=User, status_code=status.HTTP_201_CREATED, summary="Register a user")
-async def signup(user: UserRegister = Form(...)):
-    user = db.users.insert_one({
-        "fist_name": user.first_name,
-        "last_name": user.last_name,
-        "email": user.email,
-        "birth_date": user.birth_date,
-        "password": user.password,
-    })
-    return "The user has created"
+@users_router.post("/signup", status_code=status.HTTP_201_CREATED, summary="Register a user")
+async def signup(user: UserRegister = Body(...)):
+        db.users.insert_one(user.dict())
+        return "Succesfully"
 
 @users_router.post("/login", response_model=User, status_code=status.HTTP_200_OK, summary="Login a user")
 async def login():
     pass
 
 #User routes
-@users_router.get("/", response_model=List[User], status_code=status.HTTP_200_OK, summary="Get all users")
+@users_router.get("/", status_code=status.HTTP_200_OK, summary="Get all users")
 async def get_all_users():
-    with open("users.json", "r", encoding="utf-8") as f:
-        result = json.loads(f.read()) 
-        return result
-
+    users = db.users.find()
+    users = [str(i) for i in users]
+    return users
+    
 @users_router.get("/{user_id}", response_model=User, status_code=status.HTTP_200_OK, summary="Get a user")
 async def get_user(user_id: int, user: User = Body(...)):
     return user

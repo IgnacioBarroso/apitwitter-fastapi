@@ -7,8 +7,8 @@ from fastapi import FastAPI, Body
 from starlette import status
 
 #Models
-from routes.tweets_routes import tweets_router
-from routes.users_routes import users_router
+from tweets_routes import tweets_router
+from users_routes import users_router
 
 #App
 app = FastAPI()
