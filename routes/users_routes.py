@@ -6,16 +6,19 @@ from typing import Optional, List
 
 #FastAPI
 from fastapi import APIRouter, Body, status
+from fastapi.param_functions import Form
 
 #Pydantic
 from pydantic import BaseModel, EmailStr, Field
+
+#MongoDB
+from config.db import db
 
 #Router
 users_router = APIRouter(prefix="/users", tags=["Users"])
 
 #Models
 class UserBase(BaseModel):
-    user_id: UUID = Field(...)
     email: EmailStr = Field(...)
 
 class UserLogin(UserBase):
@@ -31,16 +34,15 @@ class UserRegister(User):
 
 #Auth routes
 @users_router.post("/signup", response_model=User, status_code=status.HTTP_201_CREATED, summary="Register a user")
-async def signup(user: UserRegister = Body(...)):
-    with open("users.json", "r+", encoding="utf-8") as f:
-        results = json.loads(f.read())
-        user_dict = user.dict()
-        user_dict["user_id"] = str(user_dict["user_id"])
-        user_dict["birth_date"] = str(user_dict["birth_date"])
-        results.append(user_dict)
-        f.seek(0)
-        f.write(json.dumps(results, indent=4))
-        return user
+async def signup(user: UserRegister = Form(...)):
+    user = db.users.insert_one({
+        "fist_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "birth_date": user.birth_date,
+        "password": user.password,
+    })
+    return "The user has created"
 
 @users_router.post("/login", response_model=User, status_code=status.HTTP_200_OK, summary="Login a user")
 async def login():
