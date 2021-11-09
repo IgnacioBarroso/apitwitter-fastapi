@@ -2,8 +2,8 @@
 from fastapi import FastAPI
 
 #Routes
-from routes.tweets_routes import tweets_router
-from routes.users_routes import users_router
+from routes.tweets import tweets_router
+from routes.users import users_router
 
 #App
 app = FastAPI()
