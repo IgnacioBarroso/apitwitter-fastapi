@@ -1,14 +1,9 @@
-#Python
-import json
-from typing import Optional, List
-
 #FastAPI
-from fastapi import FastAPI, Body
-from starlette import status
+from fastapi import FastAPI
 
 #Models
-from tweets_routes import Tweet, tweets_router
-from users_routes import User, users_router
+from routes.tweets_routes import tweets_router
+from routes.users_routes import users_router
 
 #App
 app = FastAPI()
