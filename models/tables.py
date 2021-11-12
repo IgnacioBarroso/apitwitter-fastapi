@@ -10,7 +10,7 @@ users = Table("users", meta,
                Column("email", String(60), nullable=False),
                Column("first_name", String(50), nullable=False),
                Column("last_name", String(50), nullable=True),
-               Column("birth_date", DATE, default=null),
+               Column("birth_date", DATE),
                Column("password", String(140), nullable=False),
                Column("tweets", Integer, ForeignKey("tweets_table.id"))
             )
