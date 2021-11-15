@@ -18,7 +18,7 @@ async def signup(user: UserRegister = Body(...)):
         db.users.insert_one(user.dict())
         return f"User {user.first_name} {user.last_name} created successfully" 
 
-@users_router.post("/login", response_model=User, status_code=status.HTTP_200_OK, summary="Login a user")
+@users_router.post("/login", response_model=User, status_code=status.HTTP_200_OK, summary="Login a user", deprecated=True)
 async def login():
     pass
 
