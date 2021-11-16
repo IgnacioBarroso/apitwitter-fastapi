@@ -1,3 +1,4 @@
 from pymongo import MongoClient
 
-db = MongoClient().Twitterdb
+client = MongoClient('mongodb://twitterapi_mongo_1:27017/')
+db = client["Twitterdb"]
