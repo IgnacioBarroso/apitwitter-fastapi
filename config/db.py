@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, MetaData
 
-engine = create_engine('mysql+pymysql://root:password@localhost:3306/Twitterdb')
+engine = create_engine('mysql+pymysql://root:root@twitterapi_mysql_1:3306/twitter')
 
 meta = MetaData()
 
